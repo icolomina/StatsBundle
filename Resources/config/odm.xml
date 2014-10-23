@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    
+    <parameters>
+        <parameter key="ict_stats.connection.odm.class">Ict\StatsBundle\Storaging\ODM\ODMStoraging</parameter>
+    </parameters>
+
+    <services>
+        <service id="ict_stats.odm_connection" class="%ict_stats.connection.php_mongo%" >
+            <argument type="service" id="doctrine_mongodb"></argument>
+            <argument type="service" id="service_container"></argument>
+        </service>
+    </services>
+    
+</container>

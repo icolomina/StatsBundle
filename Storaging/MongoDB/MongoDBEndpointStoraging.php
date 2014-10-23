@@ -35,6 +35,12 @@ class MongoDBEndpointStoraging implements Ict\StatsBundle\Storaging\EndPointStor
     protected $dbName;
     
     /**
+     * Service container
+     * @var object
+     */
+    protected $container;
+    
+    /**
      * Connection
      * @var \MongoClient
      */
@@ -53,24 +59,32 @@ class MongoDBEndpointStoraging implements Ict\StatsBundle\Storaging\EndPointStor
      * @param array $driverOptions
      * @param string $dbName
      */
-    public function __construct($uri, $options, $driverOptions, $dbName) {
+    public function __construct($uri, $options, $driverOptions, $dbName, $container) {
         
         $this->uri = $uri;
         $this->options = $options;
         $this->driverOptions = $driverOptions;
         $this->dbName = $dbName;
+        $this->container = $container;
         
         $this->connection = new \MongoClient($this->uri, $this->options, $this->driverOptions);
         $this->db = $this->connection->selectDB($this->dbName);
         
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public function getManager(){
+    public function hitStat($service, $operationField){
         
-        return $this->connection->selectDB($this->collectionName);
+        $fields = $this->container->getParameter('ict_stats.store_endpoint_fields');
+        
+        $this->db->selectCollection($this->container->getParameter('ict_stats.store_endpoint_name'))
+                    ->update(
+                            array(
+                        $fields['date_field'] => new \MongoDate(strtotime('Y-m-d')),
+                        $fields['hour_field'] => date('H'),
+                        $fields['service_field'] => $service,
+                            ), array('$inc' => array($operationField => 1)), array('upsert' => true)
+                    )
+            ;
     }
     
     /**

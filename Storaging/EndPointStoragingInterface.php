@@ -7,5 +7,5 @@
 
 interface EndPointStoragingInterface {
     
-    public function getManager();
+    public function hisStat($service, $operationField);
 }

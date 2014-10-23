@@ -174,32 +174,7 @@ class StatInterceptor implements MethodInterceptorInterface {
         $fields = $this->container->getParameter('ict_stats.db_handler.store_endpoint_fields');
         $operationField = $fields['operations_field'] . '.' . $operation;
 
-        if ($this->container->getParameter('ict_stats.db_handler.type') == 'odm') {
-            
-            $this->manager = $this->container->get($this->container->getParameter('ict_stats.db_handler.connection_service_id'));
-
-            $this->manager->createQuery($this->container->getParameter('ict_stats.db_handler.store_endpoint_name'))
-                    ->update()
-                    ->field($fields['date_field'])->equals(new \MongoDate(strtotime('Y-m-d')))
-                    ->field($fields['hour_field'])->equals(date('H'))
-                    ->field($fields['service_field'])->equals($service)
-                    ->field($operationField)->inc(1)
-                    ->getQuery(array('upsert' => true))
-                    ->execute()
-            ;
-        } 
-        else {
-
-            $this->manager->selectCollection($this->container->getParameter('ict_stats.db_handler.store_endpoint_name'))
-                    ->update(
-                            array(
-                        $fields['date_field'] => new \MongoDate(strtotime('Y-m-d')),
-                        $fields['hour_field'] => date('H'),
-                        $fields['service_field'] => $service,
-                            ), array('$inc' => array($operationField => 1)), array('upsert' => true)
-                    )
-            ;
-        }
+        $this->manager->hitStat($service, $operationField);
     }
 
     /**
