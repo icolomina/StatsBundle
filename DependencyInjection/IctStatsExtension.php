@@ -27,11 +27,7 @@ class IctStatsExtension extends Extension
         
         $interceptorDefinition = $container->getDefinition('ict_stats.stat.interceptor');
         
-        if($config['db_handler']['type'] == 'odm'){
-            
-            $interceptorDefinition->addMethodCall('setStoragingManager', array($container->getDefinition($config['db_handler']['connection_service_id'])));
-        }
-        else if( ($config['db_handler']['type'] == 'php_mongo') && isset($config['db_handler']['php_mongo_connection_params'])){
+        if( ($config['db_handler']['type'] == 'php_mongo') && isset($config['db_handler']['php_mongo_connection_params'])){
             
             $phpMongoParams = $config['db_handler']['php_mongo_connection_params'];
             
