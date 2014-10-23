@@ -1,0 +1,29 @@
+{
+    "name": "ict/stats-bundle",
+    "description": "Count operation stats by annotation way",
+    "keywords": ["stats", "mongo", "annotations","aop"],
+    "type": "symfony-bundle",
+    "license": "GPL",
+    "authors": [
+    {
+        "name": "Ignacio Colomina Torregrosa",
+        "email": "ignacio.colomina@gmail.com"
+    }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "symfony/framework-bundle": "~2.1",
+        "jms/aop-bundle": "~1.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Ict\\StatsBundle": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.0-dev"
+        }
+    },
+    "target-dir": "Ict/StatsBundle"
+}
