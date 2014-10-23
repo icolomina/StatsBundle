@@ -20,9 +20,37 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ict_stats');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->scalarNode('on_entry_method')
+                    ->defaultValue('none')
+                    ->validate()
+                    ->ifNotInArray(array('none', 'log'))
+                        ->thenInvalid(' "on_entry_method" can store only none or log values')
+                    ->end()
+                ->end()
+                ->scalarNode('on_throw_exception')
+                    ->defaultValue('none')
+                    ->validate()
+                    ->ifNotInArray(array('none', 'log', 'throw', 'throw_and_log'))
+                        ->thenInvalid(' "on_throw_exception" can store only none, log, throw and throw_and_log values')
+                    ->end()
+                ->end()
+                ->arrayNode('db_handler')
+                    ->children()
+                        ->scalarNode('type')->isRequired()->end()
+                        ->scalarNode('connection_service_id')->isRequired()->end()
+                        ->scalarNode('store_endpoint_name')->isRequired()->end()
+                        ->arrayNode('store_endpoint_fields')
+                            ->children()
+                                ->scalarNode('date_field')->defaultValue('date')->end()
+                                ->scalarNode('hour_field')->defaultValue('hour')->end()
+                                ->scalarNode('ip_field')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

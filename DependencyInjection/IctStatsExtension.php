@@ -24,5 +24,25 @@ class IctStatsExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        
+        $interceptorDefinition = $container->getDefinition('ict_stats.stat.interceptor');
+        
+        if($config['db_handler']['type'] == 'odm'){
+            
+            $interceptorDefinition->addMethodCall('setStoragingManager', array($container->getDefinition($config['db_handler']['connection_service_id'])));
+        }
+        else if( ($config['db_handler']['type'] == 'php_mongo') && isset($config['db_handler']['php_mongo_connection_params'])){
+            
+            $phpMongoParams = $config['db_handler']['php_mongo_connection_params'];
+            
+            $serverUri = $phpMongoParams['uri'];
+            $options = isset($phpMongoParams['options']) ? $phpMongoParams['options'] : array();
+            $driverOptions = $phpMongoParams['driver_options'] ? $phpMongoParams['driver_options'] : array();
+            
+            $phpMongoDefinition = $container->getDefinition('ict_stats.php_mongo_connection');
+            $phpMongoDefinition->setArguments(array($serverUri, $options, $driverOptions));
+            
+            $interceptorDefinition->addMethodCall('setStoragingManager', array($phpMongoDefinition));
+        }
     }
 }

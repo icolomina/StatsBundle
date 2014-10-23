@@ -4,17 +4,37 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
+    
     <parameters>
-        <parameter key="ict_stats.example.class">Ict\StatsBundle\Example</parameter>
+        <parameter key="ict_stats.stat.pointcut.class">Ict\StatsBundle\Aop\Pointcut\StatPointcut</parameter>
+        <parameter key="ict_stats.stat.interceptor.class">Ict\StatsBundle\Aop\Interceptor\StatInterceptor</parameter>
+        <parameter key="ict_stats.connection.php_mongo">Ict\StatsBundle\Storaging\MongoDB\MongoDBEndpointStoraging</parameter>
+        
+        <parameter key="ict_stats.php_mongo.uri"></parameter>
+        <parameter key="ict_stats.php_mongo.options"></parameter>
+        <parameter key="ict_stats.php_mongo.driver_options"></parameter>
+        <parameter key="ict_stats.php_mongo.db_name"></parameter>
     </parameters>
 
     <services>
-        <service id="ict_stats.example" class="%ict_stats.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="ict_stats.stat.pointcut" class="%ict_stats.stat.pointcut.class%">
+            <argument type="service" id="annotation_reader" />
+            <tag name="jms_aop.pointcut" interceptor="ict_stats.stat.interceptor" />
+        </service>
+        
+        <service id="ict_stats.stat.interceptor" class="%ict_stats.stat.interceptor.class%">
+            <argument type="service" id="annotation_reader" />
+            <call method="setLogger">
+                <argument type="service" id="logger" />
+            </call>
+        </service>
+        
+        <service id="ict_stats.php_mongo_connection" class="%ict_stats.connection.php_mongo%" >
+            <argument>%ict_stats.php_mongo.uri%</argument>
+            <argument>%ict_stats.php_mongo.options%</argument>
+            <argument>%ict_stats.php_mongo.driver_options%</argument>
+            <argument>%ict_stats.php_mongo.db_name%</argument>
         </service>
     </services>
-    -->
+    
 </container>
