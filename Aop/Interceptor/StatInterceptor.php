@@ -39,7 +39,13 @@ class StatInterceptor implements MethodInterceptorInterface {
      * Database manager
      * @var object
      */
-    protected $manager;
+    protected $storaging;
+    
+    /**
+     * Util parameters
+     * @var ParameterBag 
+     */
+    protected $bag;
     
     /**
      * Loads annotation reader and container
@@ -50,6 +56,8 @@ class StatInterceptor implements MethodInterceptorInterface {
     {
         $this->reader = $annotationReader;
         $this->container = $container;
+        
+        $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
         
     }
     
@@ -64,11 +72,11 @@ class StatInterceptor implements MethodInterceptorInterface {
     
     /**
      * Sets the storaging manager
-     * @param object $connection
+     * @param object $storaging
      */
-    public function setStoragingManager($connection){
+    public function setStoragingManager($storaging){
         
-        $this->manager = $connection->getManager();
+        $this->storaging = $storaging;
     }
     
     /**
@@ -76,33 +84,40 @@ class StatInterceptor implements MethodInterceptorInterface {
      */
     public function intercept(MethodInvocation $invocation) 
     {
-        $operationAnnotation = $this->reader->getMethodAnnotation($invocation->reflection, 'Annotation\Operation');
+        $operationAnnotation = $this->reader->getMethodAnnotation($invocation->reflection, 'Ict\StatsBundle\Annotation\Operation');
         $operation = $operationAnnotation->getOperation();
+        
+        $classAnnotation = $this->reader->getClassAnnotation(
+                $invocation->reflection->getDeclaringClass(), 
+                'Ict\StatsBundle\Annotation\Stateable'
+        );
+        
+        $service = $classAnnotation->getService();
         
         if($this->hasToLogEntry($operationAnnotation)){
             
             $msg = '[StatsBundle] -- Invocation of operation [%s] on service [%s]';
-            $this->logger->info(sprintf($msg, $operation, $invocation->reflection->getDeclaringClass()));
+            $this->logger->info(sprintf($msg, $operation, $service));
         }
         
         if(!$this->hasToCatchException($operationAnnotation)){
             
             $invocation->proceed();
-            $this->setStat($invocation->reflection->getDeclaringClass(), $operation);
+            $this->setStat($service, $operation);
         }
         else{
             
             try{
                
                 $invocation->proceed();
-                $this->setStat($invocation->reflection->getDeclaringClass(), $operation);
+                $this->setStat($service, $operation);
                 
             } catch (\Exception $ex) {
 
                 if($this->hasToLogError($operationAnnotation)){
                     
                     $msg = '[StatsBundle] -- Error ocurred while processing invocation of operation [%s] on service [%s]: %s';
-                    $this->logger->error(sprintf($msg, $operation, $invocation->reflection->getDeclaringClass(), $ex->getMessage()));
+                    $this->logger->error(sprintf($msg, $operation, $service, $ex->getMessage()));
                 }
                 
                 if($this->hasToRethrowException($operationAnnotation)){
@@ -122,7 +137,7 @@ class StatInterceptor implements MethodInterceptorInterface {
     {
         $onEntryMethod = (!is_null($operationAnnotation->getOnEntryMethod())) 
                        ? $operationAnnotation->getOnEntryMethod() 
-                       : $this->container->getParameter('ict_stats.on_entry_method')
+                       : $this->bag->get('on_entry_method')
         ;
         
         return ($onEntryMethod == 'log');
@@ -137,7 +152,7 @@ class StatInterceptor implements MethodInterceptorInterface {
     {
         $catchException = (!is_null($operationAnnotation->getCatchException())) 
                         ? $operationAnnotation->getCatchException()
-                        : $this->container->getParameter('ict_stats.catch_exception');
+                        : $this->bag->get('catch_exception');
         
         return (bool)$catchException;
     }
@@ -171,10 +186,9 @@ class StatInterceptor implements MethodInterceptorInterface {
      */
     protected function setStat($service, $operation) {
         
-        $fields = $this->container->getParameter('ict_stats.db_handler.store_endpoint_fields');
-        $operationField = $fields['operations_field'] . '.' . $operation;
-
-        $this->manager->hitStat($service, $operationField);
+        //$fields = $this->bag->get('db_handler.store_endpoint_fields');
+        $operationField = 'operation' . '.' . $operation;
+        $this->storaging->hitStat($service, $operationField);
     }
 
     /**
@@ -186,7 +200,7 @@ class StatInterceptor implements MethodInterceptorInterface {
     {
         return (!is_null($operationAnnotation->getOnThrowException())) 
                ? $operationAnnotation->getOnThrowException()
-               : $this->container->getParameter('ict_stats.on_throw_exception')
+               : $this->bag->get('on_throw_exception')
         ;
     }
 }

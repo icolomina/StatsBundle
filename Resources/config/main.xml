@@ -8,12 +8,6 @@
     <parameters>
         <parameter key="ict_stats.stat.pointcut.class">Ict\StatsBundle\Aop\Pointcut\StatPointcut</parameter>
         <parameter key="ict_stats.stat.interceptor.class">Ict\StatsBundle\Aop\Interceptor\StatInterceptor</parameter>
-        <parameter key="ict_stats.connection.php_mongo">Ict\StatsBundle\Storaging\MongoDB\MongoDBEndpointStoraging</parameter>
-        
-        <parameter key="ict_stats.php_mongo.uri"></parameter>
-        <parameter key="ict_stats.php_mongo.options"></parameter>
-        <parameter key="ict_stats.php_mongo.driver_options"></parameter>
-        <parameter key="ict_stats.php_mongo.db_name"></parameter>
     </parameters>
 
     <services>
@@ -24,17 +18,12 @@
         
         <service id="ict_stats.stat.interceptor" class="%ict_stats.stat.interceptor.class%">
             <argument type="service" id="annotation_reader" />
+            <argument type="service" id="service_container" />
             <call method="setLogger">
                 <argument type="service" id="logger" />
             </call>
         </service>
         
-        <service id="ict_stats.php_mongo_connection" class="%ict_stats.connection.php_mongo%" >
-            <argument>%ict_stats.php_mongo.uri%</argument>
-            <argument>%ict_stats.php_mongo.options%</argument>
-            <argument>%ict_stats.php_mongo.driver_options%</argument>
-            <argument>%ict_stats.php_mongo.db_name%</argument>
-        </service>
     </services>
     
 </container>

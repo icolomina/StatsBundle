@@ -8,13 +8,21 @@
 
 namespace Ict\StatsBundle\Storaging\MongoDB;
 
-class MongoDBEndpointStoraging implements Ict\StatsBundle\Storaging\EndPointStoragingInterface{
+use Ict\StatsBundle\Storaging\EndPointStoragingInterface;
+
+class MongoDBEndpointStoraging implements EndPointStoragingInterface{
     
     /**
      * Connection uri
      * @var string
      */
     protected $uri;
+    
+    /**
+     * Collection name
+     * @var string
+     */
+    protected $dbName;
     
     /**
      * Connection options
@@ -27,12 +35,6 @@ class MongoDBEndpointStoraging implements Ict\StatsBundle\Storaging\EndPointStor
      * @var array
      */
     protected $driverOptions;
-    
-    /**
-     * Collection name
-     * @var string
-     */
-    protected $dbName;
     
     /**
      * Service container
@@ -53,6 +55,12 @@ class MongoDBEndpointStoraging implements Ict\StatsBundle\Storaging\EndPointStor
     protected $db;
     
     /**
+     * Bag parameter
+     * @var ParameterBag
+     */
+    protected $bag;
+    
+    /**
      * Loads service arguments
      * @param string $uri
      * @param array $options
@@ -62,26 +70,32 @@ class MongoDBEndpointStoraging implements Ict\StatsBundle\Storaging\EndPointStor
     public function __construct($uri, $options, $driverOptions, $dbName, $container) {
         
         $this->uri = $uri;
+        $this->dbName = $dbName;
         $this->options = $options;
         $this->driverOptions = $driverOptions;
-        $this->dbName = $dbName;
         $this->container = $container;
+        
+        $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
         
         $this->connection = new \MongoClient($this->uri, $this->options, $this->driverOptions);
         $this->db = $this->connection->selectDB($this->dbName);
         
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public function hitStat($service, $operationField){
         
-        $fields = $this->container->getParameter('ict_stats.store_endpoint_fields');
+        $fields = $this->bag->get('db_handler.store_endpoint_fields');
         
-        $this->db->selectCollection($this->container->getParameter('ict_stats.store_endpoint_name'))
+        $this->db->selectCollection($this->bag->get('db_handler.store_endpoint_name'))
                     ->update(
                             array(
                         $fields['date_field'] => new \MongoDate(strtotime('Y-m-d')),
                         $fields['hour_field'] => date('H'),
-                        $fields['service_field'] => $service,
+                        $fields['ip_field'] => $this->container->get('request')->getClientIp(),
+                        'service' => $service,
                             ), array('$inc' => array($operationField => 1)), array('upsert' => true)
                     )
             ;

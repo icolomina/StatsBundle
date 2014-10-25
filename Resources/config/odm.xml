@@ -6,12 +6,13 @@
 
     
     <parameters>
-        <parameter key="ict_stats.connection.odm.class">Ict\StatsBundle\Storaging\ODM\ODMStoraging</parameter>
+        <parameter key="ict_stats.connection.odm.class">Ict\StatsBundle\Storaging\ODM\ODMEndpointStoraging</parameter>
     </parameters>
 
     <services>
-        <service id="ict_stats.odm_connection" class="%ict_stats.connection.php_mongo%" >
+        <service id="ict_stats.odm_connection" class="%ict_stats.connection.odm.class%" >
             <argument type="service" id="doctrine_mongodb"></argument>
+            <!--<argument type="service" id="request"></argument>-->
             <argument type="service" id="service_container"></argument>
         </service>
     </services>

@@ -23,7 +23,7 @@ class IctStatsExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader->load('main.xml');
         
         $container->setParameter('ict_stats.param_bag', array(
             'on_entry_method' => $config['on_entry_method'],
@@ -38,14 +38,7 @@ class IctStatsExtension extends Extension
         if($config['db_handler']['type'] == 'php_mongo'){
             
             $loader->load('php_mongo.xml');
-            $phpMongoParams = $config['db_handler']['php_mongo_connection_params'];
-            
-            $serverUri = $phpMongoParams['uri'];
-            $options = isset($phpMongoParams['options']) ? $phpMongoParams['options'] : array();
-            $driverOptions = $phpMongoParams['driver_options'] ? $phpMongoParams['driver_options'] : array();
-            
-            $phpMongoDefinition = $container->getDefinition('ict_stats.php_mongo_connection');
-            $phpMongoDefinition->setArguments(array($serverUri, $options, $driverOptions));
+            $phpMongoDefinition = $this->getPhpMongoServiceDefinition($config, $container);
             
             $interceptorDefinition->addMethodCall('setStoragingManager', array($phpMongoDefinition));
         }
@@ -55,5 +48,29 @@ class IctStatsExtension extends Extension
             $loader->load('odm.xml');
             $interceptorDefinition->addMethodCall('setStoragingManager', array($container->getDefinition('ict_stats.odm_connection')));
         }
+    }
+    
+    /**
+     * Configure and gets php mongo definition
+     * @param array $config Configuration params
+     * @param ContainerBuilder $container Service container
+     * @return Definition
+     */
+    protected function getPhpMongoServiceDefinition(Array $config, $container) {
+
+        $phpMongoParams = $config['db_handler']['php_mongo_connection_params'];
+
+        $serverUri = $phpMongoParams['uri'];
+        $dbName = $phpMongoParams['db_name'];
+        $options = isset($phpMongoParams['options']) ? $phpMongoParams['options'] : array();
+        $driverOptions = $phpMongoParams['driver_options'] ? $phpMongoParams['driver_options'] : array();
+
+        $phpMongoDefinition = $container->getDefinition('ict_stats.php_mongo_connection');
+        $phpMongoDefinition->replaceArgument(0, $serverUri);
+        $phpMongoDefinition->replaceArgument(1, $dbName);
+        $phpMongoDefinition->replaceArgument(2, $options);
+        $phpMongoDefinition->replaceArgument(3, $driverOptions);
+        
+        return $phpMongoDefinition;
     }
 }

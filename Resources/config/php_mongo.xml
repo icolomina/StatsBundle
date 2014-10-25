@@ -10,14 +10,16 @@
         <parameter key="ict_stats.php_mongo.options"></parameter>
         <parameter key="ict_stats.php_mongo.driver_options"></parameter>
         <parameter key="ict_stats.php_mongo.db_name"></parameter>
+        <parameter key="ict_stats.connection.php_mongo.class">Ict\StatsBundle\Storaging\MongoDB\MongoDBEndpointStoraging</parameter>
     </parameters>
 
     <services>
-        <service id="ict_stats.php_mongo_connection" class="%ict_stats.connection.php_mongo%" >
+        <service id="ict_stats.php_mongo_connection" class="%ict_stats.connection.php_mongo.class%">
             <argument>%ict_stats.php_mongo.uri%</argument>
+            <argument>%ict_stats.php_mongo.db_name%</argument>
             <argument>%ict_stats.php_mongo.options%</argument>
             <argument>%ict_stats.php_mongo.driver_options%</argument>
-            <argument>%ict_stats.php_mongo.db_name%</argument>
+            <!--<argument type="service" id="request"></argument>-->
             <argument type="service" id="service_container"></argument>
         </service>
     </services>

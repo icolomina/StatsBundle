@@ -5,7 +5,12 @@
  * @author igncoto
  */
 
+namespace Ict\StatsBundle\Storaging;
+
 interface EndPointStoragingInterface {
     
-    public function hisStat($service, $operationField);
+    /**
+     * hits stats to the endpoint
+     */
+    public function hitStat($service, $operationField);
 }

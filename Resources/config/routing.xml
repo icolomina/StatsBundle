@@ -5,6 +5,6 @@
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ict_stats_homepage" pattern="/hello/{name}">
-        <default key="_controller">IctStatsBundle:Default:index</default>
+        <default key="_controller">IctStatsBundle:IctStats:ictStatsIndex</default>
     </route>
 </routes>
