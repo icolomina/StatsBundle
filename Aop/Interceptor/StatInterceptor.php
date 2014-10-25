@@ -12,6 +12,7 @@ use CG\Proxy\MethodInterceptorInterface;
 use CG\Proxy\MethodInvocation;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Doctrine\Common\Annotations\Reader;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Ict\StatsBundle\Annotation\Operation;
 
