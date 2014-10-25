@@ -49,7 +49,7 @@ class ODMEndpointStoraging implements EndPointStoragingInterface {
     /**
      * {@inheritDoc}
      */
-    public function hisStat($service, $operationField){
+    public function hitStat($service, $operationField){
         
         $fields = $this->bag->get('db_handler.store_endpoint_fields');
         
