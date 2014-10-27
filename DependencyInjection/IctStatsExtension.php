@@ -63,7 +63,7 @@ class IctStatsExtension extends Extension
         $serverUri = $phpMongoParams['uri'];
         $dbName = $phpMongoParams['db_name'];
         $options = isset($phpMongoParams['options']) ? $phpMongoParams['options'] : array();
-        $driverOptions = $phpMongoParams['driver_options'] ? $phpMongoParams['driver_options'] : array();
+        $driverOptions = isset($phpMongoParams['driver_options']) ? $phpMongoParams['driver_options'] : array();
 
         $phpMongoDefinition = $container->getDefinition('ict_stats.php_mongo_connection');
         $phpMongoDefinition->replaceArgument(0, $serverUri);

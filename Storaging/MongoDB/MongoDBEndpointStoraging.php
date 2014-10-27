@@ -8,6 +8,7 @@
 
 namespace Ict\StatsBundle\Storaging\MongoDB;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Ict\StatsBundle\Storaging\EndPointStoragingInterface;
 
 class MongoDBEndpointStoraging implements EndPointStoragingInterface{
@@ -67,7 +68,7 @@ class MongoDBEndpointStoraging implements EndPointStoragingInterface{
      * @param array $driverOptions
      * @param string $dbName
      */
-    public function __construct($uri, $options, $driverOptions, $dbName, $container) {
+    public function __construct($uri, $dbName, $options, $driverOptions, $container) {
         
         $this->uri = $uri;
         $this->dbName = $dbName;
@@ -92,7 +93,7 @@ class MongoDBEndpointStoraging implements EndPointStoragingInterface{
         $this->db->selectCollection($this->bag->get('db_handler.store_endpoint_name'))
                     ->update(
                             array(
-                        $fields['date_field'] => new \MongoDate(strtotime('Y-m-d')),
+                        $fields['date_field'] => new \MongoDate(strtotime(date('Y-m-d'))),
                         $fields['hour_field'] => date('H'),
                         $fields['ip_field'] => $this->container->get('request')->getClientIp(),
                         'service' => $service,
