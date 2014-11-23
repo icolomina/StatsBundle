@@ -87,6 +87,7 @@ class StatInterceptor implements MethodInterceptorInterface {
     {
         $operationAnnotation = $this->reader->getMethodAnnotation($invocation->reflection, 'Ict\StatsBundle\Annotation\Operation');
         $operation = $operationAnnotation->getOperation();
+        $returnValue = null;
         
         $classAnnotation = $this->reader->getClassAnnotation(
                 $invocation->reflection->getDeclaringClass(), 
@@ -103,14 +104,14 @@ class StatInterceptor implements MethodInterceptorInterface {
         
         if(!$this->hasToCatchException($operationAnnotation)){
             
-            $invocation->proceed();
+            $returnValue = $invocation->proceed();
             $this->setStat($service, $operation);
         }
         else{
             
             try{
                
-                $invocation->proceed();
+                $returnValue = $invocation->proceed();
                 $this->setStat($service, $operation);
                 
             } catch (\Exception $ex) {
@@ -127,6 +128,8 @@ class StatInterceptor implements MethodInterceptorInterface {
                 }
             }
         }
+        
+        return $returnValue;
     }
     
     /**
