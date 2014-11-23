@@ -6,9 +6,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 
 class PointcutTest extends \PHPUnit_Framework_TestCase {
     
+    /**
+     * Reflection class
+     * @var \ReflectionClass
+     */
     protected static $reflectionClass;
-    
-    //protected $container;
     
     /**
      * {@inheritDoc}
@@ -19,19 +21,8 @@ class PointcutTest extends \PHPUnit_Framework_TestCase {
     }
     
     /**
-     * {@inheritDoc}
+     * Test matches class
      */
-    /*public function setUp(){
-        
-        if(is_null($this->container)){
-        
-            $app = new \AppKernel('test', true);
-            $app->boot();
-        
-            $this->container = $app->getContainer();
-        }
-    }*/
-    
     public function testPointcutClass(){
         
        $pointcutStub = $this->getMock(
@@ -44,6 +35,9 @@ class PointcutTest extends \PHPUnit_Framework_TestCase {
        
     }
     
+    /**
+     * Test matches methos
+     */
     public function testPointcutMethod(){
         
        $reflectionMethod = self::$reflectionClass->getMethod('method');
