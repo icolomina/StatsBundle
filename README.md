@@ -111,7 +111,9 @@ Now you have your configuration ready, let's begin to hit stats. Imagine you hav
      .....
   }
 
-You can achieve that only by annotating class and method like this::
+You can achieve that only by annotating class and method like this
+
+::
 
    use Ict\StatsBundle\Annotation as Stat;    
 
