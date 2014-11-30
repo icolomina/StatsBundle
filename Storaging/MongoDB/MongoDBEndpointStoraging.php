@@ -78,8 +78,6 @@ class MongoDBEndpointStoraging implements EndPointStoragingInterface,SettingPara
         $this->driverOptions = $driverOptions;
         $this->request = $request;
         
-        $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
-        
         $this->connection = new \MongoClient($this->uri, $this->options, $this->driverOptions);
         $this->db = $this->connection->selectDB($this->dbName);
         

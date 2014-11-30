@@ -43,8 +43,6 @@ class ODMEndpointStoraging implements EndPointStoragingInterface,SettingParamete
         
         $this->odm = $odm;
         $this->request = $request;
-        
-        $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
     }
     
     /**
