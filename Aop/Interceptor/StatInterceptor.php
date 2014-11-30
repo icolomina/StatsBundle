@@ -15,8 +15,9 @@ use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Ict\StatsBundle\Annotation\Operation;
+use Ict\StatsBundle\SettingParametersInterface;
 
-class StatInterceptor implements MethodInterceptorInterface {
+class StatInterceptor implements MethodInterceptorInterface,SettingParametersInterface {
     
     /**
      * Doctrine Annotation reader
@@ -58,8 +59,6 @@ class StatInterceptor implements MethodInterceptorInterface {
         $this->reader = $annotationReader;
         $this->container = $container;
         
-        $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
-        
     }
     
     /**
@@ -78,6 +77,14 @@ class StatInterceptor implements MethodInterceptorInterface {
     public function setStoragingManager($storaging){
         
         $this->storaging = $storaging;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function setParams(array $params) {
+        
+        $this->bag = new ParameterBag($params);
     }
     
     /**
