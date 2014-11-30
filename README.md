@@ -40,10 +40,8 @@ Then register the bundle with your kernel::
 
 Make sure you also register JMS\AopBundle in your kernel so that pointcut and interceptors work
 
-Usage
------
 Configuration Options
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 StatsBundle options must be configured under ict_stats entry in your config.yml file. The available options are the following:
 
 - on_entry_method: Indicates what to do when annotated method is intercepted. Default value is "none" and it tells to the interceptor that do nothing. If "log" value is setted, then logger service will be used to log the entry method
@@ -98,7 +96,7 @@ The following are two configuration examples. One using *php_mongo* type and the
 Stats inserts are made by using *w* option setted to 0. If you want to change it, place the option *ins_write_concerns* under *db_handler* and set it to 1.
 
 Making classes and methods stateables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------
 Now you have your configuration ready, let's begin to hit stats. Imagine you have a *Mailer* class which keeps a *send* method and you would like to hit an stat when a new mail is sent::
 
   class Mailer {
