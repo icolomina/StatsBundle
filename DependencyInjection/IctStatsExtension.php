@@ -25,13 +25,13 @@ class IctStatsExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('main.xml');
         
-        $container->setParameter('ict_stats.param_bag', array(
+        $parameters = array(
             'on_entry_method' => $config['on_entry_method'],
             'on_throw_exception' => $config['on_throw_exception'],
             'catch_exception' => $config['catch_exception'],
             'db_handler.store_endpoint_name' => $config['db_handler']['store_endpoint_name'],
             'db_handler.store_endpoint_fields' => $config['db_handler']['store_endpoint_fields']
-        ));
+        );
         
         $interceptorDefinition = $container->getDefinition('ict_stats.stat.interceptor');
         
@@ -39,6 +39,7 @@ class IctStatsExtension extends Extension
             
             $loader->load('php_mongo.xml');
             $phpMongoDefinition = $this->getPhpMongoServiceDefinition($config, $container);
+            $phpMongoDefinition->addMethodCall('setParams', array($parameters));
             
             $interceptorDefinition->addMethodCall('setStoragingManager', array($phpMongoDefinition));
         }
@@ -46,8 +47,13 @@ class IctStatsExtension extends Extension
         if($config['db_handler']['type'] == 'odm'){
             
             $loader->load('odm.xml');
-            $interceptorDefinition->addMethodCall('setStoragingManager', array($container->getDefinition('ict_stats.odm_connection')));
+            $odmDefinition = $container->getDefinition('ict_stats.odm_connection');
+            $odmDefinition->addMethodCall('setParams', array($parameters));
+            
+            $interceptorDefinition->addMethodCall('setStoragingManager', array($odmDefinition));
         }
+        
+        $interceptorDefinition->addMethodCall('setParams', array($parameters));
     }
     
     /**

@@ -11,7 +11,9 @@ namespace Ict\StatsBundle\Storaging\MongoDB;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Ict\StatsBundle\Storaging\EndPointStoragingInterface;
 
-class MongoDBEndpointStoraging implements EndPointStoragingInterface{
+use Ict\StatsBundle\SettingParametersInterface;
+
+class MongoDBEndpointStoraging implements EndPointStoragingInterface,SettingParametersInterface{
     
     /**
      * Connection uri
@@ -38,10 +40,10 @@ class MongoDBEndpointStoraging implements EndPointStoragingInterface{
     protected $driverOptions;
     
     /**
-     * Service container
+     * Request stack
      * @var object
      */
-    protected $container;
+    protected $request;
     
     /**
      * Connection
@@ -68,19 +70,27 @@ class MongoDBEndpointStoraging implements EndPointStoragingInterface{
      * @param array $driverOptions
      * @param string $dbName
      */
-    public function __construct($uri, $dbName, $options, $driverOptions, $container) {
+    public function __construct($uri, $dbName, $options, $driverOptions, $request) {
         
         $this->uri = $uri;
         $this->dbName = $dbName;
         $this->options = $options;
         $this->driverOptions = $driverOptions;
-        $this->container = $container;
+        $this->request = $request;
         
         $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
         
         $this->connection = new \MongoClient($this->uri, $this->options, $this->driverOptions);
         $this->db = $this->connection->selectDB($this->dbName);
         
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function setParams(array $params) {
+        
+        $this->bag = new ParameterBag($params);
     }
     
     /**
@@ -95,7 +105,7 @@ class MongoDBEndpointStoraging implements EndPointStoragingInterface{
                             array(
                         $fields['date_field'] => new \MongoDate(strtotime(date('Y-m-d'))),
                         $fields['hour_field'] => date('H'),
-                        $fields['ip_field'] => $this->container->get('request')->getClientIp(),
+                        $fields['ip_field'] => $this->request->getCurrentRequest()->getClientIp(),
                         'service' => $service,
                             ), array('$inc' => array($operationField => 1)), array('upsert' => true)
                     )

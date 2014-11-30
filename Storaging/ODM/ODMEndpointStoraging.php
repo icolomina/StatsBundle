@@ -12,8 +12,9 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\DependencyInjection\Container;
 
 use Ict\StatsBundle\Storaging\EndPointStoragingInterface;
+use Ict\StatsBundle\SettingParametersInterface;
 
-class ODMEndpointStoraging implements EndPointStoragingInterface {
+class ODMEndpointStoraging implements EndPointStoragingInterface,SettingParametersInterface {
     
     /**
      * Mongo ODM
@@ -22,10 +23,10 @@ class ODMEndpointStoraging implements EndPointStoragingInterface {
     protected $odm;
     
     /**
-     * Container service
+     * request stack
      * @var object
      */
-    protected $container;
+    protected $request;
     
     /**
      * Bag parameter
@@ -38,12 +39,20 @@ class ODMEndpointStoraging implements EndPointStoragingInterface {
      * @param object $odm
      * @param object $container
      */
-    public function __construct($odm, Container $container){
+    public function __construct($odm, $request){
         
         $this->odm = $odm;
-        $this->container = $container;
+        $this->request = $request;
         
         $this->bag = new ParameterBag($this->container->getParameter('ict_stats.param_bag'));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function setParams(array $params) {
+        
+        $this->bag = new ParameterBag($params);
     }
     
     /**
@@ -57,7 +66,7 @@ class ODMEndpointStoraging implements EndPointStoragingInterface {
                     ->update()
                     ->field($fields['date_field'])->equals(new \MongoDate(strtotime(date('Y-m-d'))))
                     ->field($fields['hour_field'])->equals(date('H'))
-                    ->field($fields['ip_field'])->equals($this->container->get('request')->getClientIp())
+                    ->field($fields['ip_field'])->equals($this->request->getCurrentRequest()->getClientIp())
                     ->field('service')->equals($service)
                     ->field($operationField)->inc(1)
                     ->getQuery(array('upsert' => true))
