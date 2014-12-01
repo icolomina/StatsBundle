@@ -15,29 +15,29 @@ Use git submodules to install it::
 
     git submodule add https://github.com/icolomina/StatsBundle.git src/Ict/StatsBundle
 
-Or use composer repositories option to install it::
-
-   "repositories": [
-        {
-            "url": "https://github.com/icolomina/StatsBundle.git",
-            "type": "git"
-        }
-    ],
- 
-    "require": {
-       ........
-       "ict/stats-bundle": "dev-master",
+Or use composer repositories option to install it:
+```json
+"repositories": [
+    {
+        "url": "https://github.com/icolomina/StatsBundle.git",
+        "type": "git"
     }
-
-Then register the bundle with your kernel::
-
-    // in AppKernel::registerBundles()
-    $bundles = array(
-        // ...
-        new Ict\StatsBundle\IctStatsBundle(),
-        // ...
-    );
-
+],
+ 
+"require": {
+    ........
+    "ict/stats-bundle": "dev-master",
+}
+```
+Then register the bundle with your kernel:
+```php
+// in AppKernel::registerBundles()
+$bundles = array(
+    // ...
+    new Ict\StatsBundle\IctStatsBundle(),
+    // ...
+);
+```
 Make sure you also register JMS\AopBundle in your kernel so that pointcut and interceptors work
 
 Configuration Options
