@@ -123,7 +123,7 @@ use Ict\StatsBundle\Annotation as Stat;
     .....
 
     /**
-    * @Stat\Operation(service="mail_sent")
+    * @Stat\Operation(operation="mail_sent")
     */
     public function send()
     {
