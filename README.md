@@ -63,37 +63,36 @@ StatsBundle options must be configured under ict_stats entry in your config.yml 
 
 The following are two configuration examples. One using *php_mongo* type and the other one using *odm* type
 
-::
+```yaml
+ict_stats:
+    on_entry_method: log
+    on_throw_exception: throw_and_log
+    catch_exception: true
+    db_handler:
+      type: php_mongo
+      store_endpoint_name: Stat
+      store_endpoint_fields:
+        date_field: date
+        hour_field: hour
+        ip_field: ip
+      php_mongo_connection_params:
+        uri: mongodb://localhost:27017
+        db_name: mydb
+        options: ~
+        driver_options: ~
 
-   ict_stats:
-     on_entry_method: log
-     on_throw_exception: throw_and_log
-     catch_exception: true
-     db_handler:
-       type: php_mongo
-       store_endpoint_name: Stat
-       store_endpoint_fields:
-         date_field: date
-         hour_field: hour
-         ip_field: ip
-       php_mongo_connection_params:
-         uri: mongodb://localhost:27017
-         db_name: mydb
-         options: ~
-         driver_options: ~
-
-   ict_stats:
-     on_entry_method: log
-     on_throw_exception: throw_and_log
-     catch_exception: true
-     db_handler:
-       type: odm
-       store_endpoint_name: Stat
-       store_endpoint_fields:
-         date_field: date
-         hour_field: hour
-         ip_field: ip
-
+ ict_stats:
+    on_entry_method: log
+    on_throw_exception: throw_and_log
+    catch_exception: true
+    db_handler:
+      type: odm
+      store_endpoint_name: Stat
+      store_endpoint_fields:
+        date_field: date
+        hour_field: hour
+        ip_field: ip
+```
 Stats inserts are made by using *w* option setted to 0. If you want to change it, place the option *ins_write_concerns* under *db_handler* and set it to 1.
 
 Making classes and methods stateables
