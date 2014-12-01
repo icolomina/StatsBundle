@@ -97,44 +97,42 @@ Stats inserts are made by using *w* option setted to 0. If you want to change it
 
 Making classes and methods stateables
 -------------------------------------
-Now you have your configuration ready, let's begin to hit stats. Imagine you have a *Mailer* class which keeps a *send* method and you would like to hit an stat when a new mail is sent::
+Now you have your configuration ready, let's begin to hit stats. Imagine you have a *Mailer* class which keeps a *send* method and you would like to hit an stat when a new mail is sent:
+```php
+class Mailer {
 
-  class Mailer {
+    .....
 
-     .....
+    public function send()
+    {
 
-     public function send()
-     {
+    }
 
-     }
-
-     .....
-  }
-
+    .....
+}
+```
 You can achieve that only by annotating class and method like this
+```php
+use Ict\StatsBundle\Annotation as Stat;    
 
-::
+/**
+ * @Stat\Stateable(service="mailing")
+ */
+ class Mailer {
 
-   use Ict\StatsBundle\Annotation as Stat;    
+    .....
 
-   /**
-   * @Stat\Stateable(service="mailing")
-   */
-   class Mailer {
+    /**
+    * @Stat\Operation(service="mail_sent")
+    */
+    public function send()
+    {
 
-     .....
+    }
 
-     /**
-     * @Stat\Operation(service="mail_sent")
-     */
-     public function send()
-     {
-
-     }
-
-     .....
-  }
-
+    .....
+ }
+ ```
 When Mailer:send method execution is intercepted in your application, an stat will be "hitted" to the stats collection making a document with the following structure
 
 ::
