@@ -87,7 +87,7 @@ ict_stats:
     catch_exception: true
     db_handler:
       type: odm
-      store_endpoint_name: Stat
+      store_endpoint_name: AcmeDemoBundle:Stat
       store_endpoint_fields:
         date_field: date
         hour_field: hour
