@@ -135,30 +135,29 @@ use Ict\StatsBundle\Annotation as Stat;
  ```
 When Mailer:send method execution is intercepted in your application, an stat will be "hitted" to the stats collection making a document with the following structure
 
-::
-
-    _id: ObjectId("...........")
-    date: ISODate("...........")
-    hour: XX
-    ip: XXX.XXX.XXX.XXX
-    service: "mailing"
-    operation:
-       mail_sent: 1
-
+```json
+_id: ObjectId("...........")
+date: ISODate("...........")
+hour: XX
+ip: XXX.XXX.XXX.XXX
+service: "mailing"
+operation:
+    mail_sent: 1
+```
 Then when a new mail is sent, a new hit will be sent to the stats collection incrementing *mail_sent* operation to 2. If you annotate another method, for instance *error()* method in mailer class, and set it as *sending_error* your collection will be able to increment a new operation into mailing service:
 
-:: 
+```json
 
-    _id: ObjectId("...........")
-    date: ISODate("...........")
-    hour: XX
-    ip: XXX.XXX.XXX.XXX
-    service: "mailing"
-    operation:
-       mail_sent: 2
-       sending_error: 1
+_id: ObjectId("...........")
+date: ISODate("...........")
+hour: XX
+ip: XXX.XXX.XXX.XXX
+service: "mailing"
+operation:
+    mail_sent: 2
+    sending_error: 1
 
-
+```
 Todo
 ----
 - Create more tests
