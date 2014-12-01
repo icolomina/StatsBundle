@@ -62,6 +62,7 @@ StatsBundle options must be configured under ict_stats entry in your config.yml 
    - php_mongo_connection_params: This option is only allowed when using *php_mongo* type option. You will have to indicate the *uri*, *db_name*, *options* and *driver_options* options in order to allow \MongoClient to connect and deal with your mongo database.
 
 The following are two configuration examples. One using *php_mongo* type and the other one using *odm* type
+
 ::
 
    ict_stats:
