@@ -11,24 +11,14 @@ This bundle requires doctrine annotations reader and JMS\AopBundle to be install
 
 Installation
 ------------
-Use git submodules to install it::
-
-    git submodule add https://github.com/icolomina/StatsBundle.git src/Ict/StatsBundle
-
-Or use composer repositories option to install it:
+Use composer:
 ```json
-"repositories": [
-    {
-        "url": "https://github.com/icolomina/StatsBundle.git",
-        "type": "git"
-    }
-],
- 
 "require": {
     ........
     "ict/stats-bundle": "dev-master",
 }
 ```
+
 Then register the bundle with your kernel:
 ```php
 // in AppKernel::registerBundles()
