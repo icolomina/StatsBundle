@@ -1,6 +1,7 @@
-===========
-StatsBundle
-===========
+# StatsBundle
+[![Code Climate](https://codeclimate.com/github/icolomina/StatsBundle/badges/gpa.svg)](https://codeclimate.com/github/icolomina/StatsBundle)
+
+
 Introduction
 ------------
 StatsBundle allows developers to hit operation stats simply by annotating a class (which will acts as a service) and class methods (which will act as service operations). StatsBundle use MongoDB as a database endpoint where store stats.
