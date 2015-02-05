@@ -1,5 +1,6 @@
 # StatsBundle
 [![Code Climate](https://codeclimate.com/github/icolomina/StatsBundle/badges/gpa.svg)](https://codeclimate.com/github/icolomina/StatsBundle)
+[![Build Status](https://travis-ci.org/icolomina/StatsBundle.svg?branch=master)](https://travis-ci.org/icolomina/StatsBundle)
 
 
 Introduction
