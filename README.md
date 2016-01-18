@@ -1,6 +1,7 @@
 # StatsBundle
 [![Code Climate](https://codeclimate.com/github/icolomina/StatsBundle/badges/gpa.svg)](https://codeclimate.com/github/icolomina/StatsBundle)
 [![Build Status](https://travis-ci.org/icolomina/StatsBundle.svg?branch=master)](https://travis-ci.org/icolomina/StatsBundle)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/edf938dc7fcb4ac493e5ef689116c570)](https://www.codacy.com/app/ignacio-colomina/StatsBundle)
 
 
 Introduction
